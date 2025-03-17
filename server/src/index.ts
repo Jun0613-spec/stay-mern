@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import helmet from "helmet";
+import axios from "axios";
 
 import authRoute from "./routes/auth.route";
 import usersRoute from "./routes/users.route";
@@ -35,6 +36,22 @@ app.get("/test", async (req: Request, res: Response) => {
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);
+
+const url = process.env.SERVER_URL!;
+const interval = 30000;
+
+const reloadWebsite = () => {
+  axios
+    .get(url)
+    .then(() => {
+      console.log("website reloaded");
+    })
+    .catch((error: Error) => {
+      console.error(`Error : ${error.message}`);
+    });
+};
+
+setInterval(reloadWebsite, interval);
 
 const port = process.env.PORT || 3001;
 
