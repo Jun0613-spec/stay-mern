@@ -1,0 +1,155 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+//   directUrl = env("DIRECT_URL")
+// }
+
+// model User {
+//   id        String   @id @default(uuid())  
+//   email     String   @unique
+//   password  String
+//   firstName String
+//   lastName  String
+//   avatarUrl String?
+//   googleId  String?  @unique
+//   createdAt DateTime @default(now())  
+//   updatedAt DateTime @updatedAt      
+//   role      UserRole @default(CUSTOMER)
+
+//   bookings  Booking[]  
+
+//   @@map("users")
+// }
+
+// enum UserRole {
+//   BUSINESS
+//   CUSTOMER
+// }
+
+// model Booking {
+//   id               String           @id @default(uuid())
+//   firstName        String
+//   lastName         String
+//   email            String
+//   adultCount       Int
+//   childCount       Int
+//   checkIn          DateTime
+//   checkOut         DateTime
+  
+//   totalCost        Float
+
+//   accomodationId   String    
+//   accomodation     Accomodation     @relation(fields: [accomodationId], references: [id], onDelete: Cascade)  
+  
+//   userId           String
+//   user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)  
+  
+//   @@index([email])
+//   @@map("bookings")
+// }
+
+// model Accomodation {
+//   id            String   @id @default(uuid())
+//   userId        String
+//   name          String
+//   city          String
+//   country       String
+//   description   String
+//   type          String
+//   adultCount    Int
+//   childCount    Int
+//   facilities    String[]
+//   pricePerNight Float
+//   starRating    Int      
+//   imageUrls     String[]
+//   lastUpdated   DateTime  @default(now())
+
+//   bookings      Booking[]
+
+//   @@index([userId])
+//   @@map("accomodations")
+// }
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  avatarUrl String?
+  googleId  String?  @unique
+  createdAt DateTime @default(now())  
+  updatedAt DateTime @updatedAt      
+  role      UserRole @default(CUSTOMER)
+
+  bookings  Booking[] @relation(fields: [], references: [])
+
+  @@map("users")
+}
+
+enum UserRole {
+  BUSINESS
+  CUSTOMER
+}
+
+model Booking {
+  id               String        @id @default(auto()) @map("_id") @db.ObjectId
+  firstName        String
+  lastName         String
+  email            String
+  adultCount       Int
+  childCount       Int
+  checkIn          DateTime
+  checkOut         DateTime
+  totalCost        Float
+
+  accomodationId   String        @db.ObjectId  
+  accomodation     Accomodation? @relation(fields: [accomodationId], references: [id])  
+  
+  userId           String        @db.ObjectId  
+  user             User?         @relation(fields: [userId], references: [id])
+
+  @@index([email])
+  @@map("bookings")
+}
+
+model Accomodation {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String
+  name          String
+  city          String
+  country       String
+  description   String
+  type          String
+  adultCount    Int
+  childCount    Int
+  facilities    String[]
+  pricePerNight Float
+  starRating    Int      
+  imageUrls     String[]
+  lastUpdated   DateTime  @default(now())
+
+  bookings      Booking[] @relation(fields: [], references: [])
+
+  @@index([userId])
+  @@map("accomodations")
+}
