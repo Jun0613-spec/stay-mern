@@ -3,7 +3,6 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import helmet from "helmet";
-import path from "path";
 
 import authRoute from "./routes/auth.route";
 import usersRoute from "./routes/users.route";
@@ -26,16 +25,12 @@ app.use(
     policy: "cross-origin"
   })
 );
-app.use(express.static(path.join(__dirname, "../../client/dist")));
+
 app.use(cookieParser());
 
 /* ROUTES */
 app.get("/test", async (req: Request, res: Response) => {
   res.json({ message: "hello from server endpoint" });
-});
-
-app.get("*", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
 });
 
 app.use("/api/auth", authRoute);
