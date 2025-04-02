@@ -40,6 +40,8 @@ app.use(
 
 app.use(cookieParser());
 
+console.log("DATABASE_URL:", process.env.DATABASE_URL!);
+
 /* ROUTES */
 app.get("/test", async (req: Request, res: Response) => {
   res.json({ message: "hello from server endpoint" });
@@ -51,21 +53,21 @@ app.use("/api/accommodations", accommodationsRoute);
 app.use("/api/my-accommodations", myAccommodationsRoute);
 app.use("/api/bookings", bookingsRoute);
 
-// const url = process.env.SERVER_URL!;
-// const interval = 30000;
+const url = process.env.SERVER_URL!;
+const interval = 30000;
 
-// const reloadWebsite = () => {
-//   axios
-//     .get(url)
-//     .then(() => {
-//       console.log("website reloaded");
-//     })
-//     .catch((error: Error) => {
-//       console.error(`Error : ${error.message}`);
-//     });
-// };
+const reloadWebsite = () => {
+  axios
+    .get(url)
+    .then(() => {
+      console.log("website reloaded");
+    })
+    .catch((error: Error) => {
+      console.error(`Error : ${error.message}`);
+    });
+};
 
-// setInterval(reloadWebsite, interval);
+setInterval(reloadWebsite, interval);
 
 const port = process.env.PORT || 3001;
 
