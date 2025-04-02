@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: process.env.CLIENT_URL!,
     credentials: true
   })
 );
@@ -51,21 +51,21 @@ app.use("/api/accommodations", accommodationsRoute);
 app.use("/api/my-accommodations", myAccommodationsRoute);
 app.use("/api/bookings", bookingsRoute);
 
-const url = process.env.SERVER_URL!;
-const interval = 30000;
+// const url = process.env.SERVER_URL!;
+// const interval = 30000;
 
-const reloadWebsite = () => {
-  axios
-    .get(url)
-    .then(() => {
-      console.log("website reloaded");
-    })
-    .catch((error: Error) => {
-      console.error(`Error : ${error.message}`);
-    });
-};
+// const reloadWebsite = () => {
+//   axios
+//     .get(url)
+//     .then(() => {
+//       console.log("website reloaded");
+//     })
+//     .catch((error: Error) => {
+//       console.error(`Error : ${error.message}`);
+//     });
+// };
 
-setInterval(reloadWebsite, interval);
+// setInterval(reloadWebsite, interval);
 
 const port = process.env.PORT || 3001;
 
