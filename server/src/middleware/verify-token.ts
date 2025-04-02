@@ -27,6 +27,7 @@ const verifyToken = async (
 
     next();
   } catch (error) {
+    res.cookie("auth_token", "", { expires: new Date(0) });
     return res.status(401).json({ message: "unauthorized" });
   }
 };

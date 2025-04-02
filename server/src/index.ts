@@ -4,11 +4,22 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import axios from "axios";
+import { v2 as cloudinary } from "cloudinary";
 
+/* ROUTES */
 import authRoute from "./routes/auth.route";
 import usersRoute from "./routes/users.route";
+import accommodationsRoute from "./routes/accommodations.route";
+import myAccommodationsRoute from "./routes/my-accommodations.route";
+import bookingsRoute from "./routes/bookings.route";
 
 dotenv.config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const app = express();
 
@@ -36,6 +47,9 @@ app.get("/test", async (req: Request, res: Response) => {
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);
+app.use("/api/accommodations", accommodationsRoute);
+app.use("/api/my-accommodations", myAccommodationsRoute);
+app.use("/api/bookings", bookingsRoute);
 
 const url = process.env.SERVER_URL!;
 const interval = 30000;

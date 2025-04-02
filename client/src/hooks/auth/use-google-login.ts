@@ -1,18 +1,36 @@
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-import { googleLogin } from "@/lib/api-client";
+import { axiosInstance } from "@/lib/axios";
+
+const googleLogin = async (credential: string) => {
+  const response = await axiosInstance.post("/api/auth/google", { credential });
+
+  return response.data;
+};
 
 export const useGoogleLogin = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
   const mutation = useMutation({
     mutationFn: googleLogin,
-    onSuccess: (data) => {
-      toast.success("Redirecting to Google login");
+    onSuccess: async (data) => {
+      toast.success("Welcome");
 
-      window.location.href = data.redirectUrl;
+      await queryClient.invalidateQueries({
+        queryKey: ["currentUser"]
+      });
+
+      document.cookie = `auth_token=${data.token}; path=/`;
+
+      navigate("/");
     },
     onError: (error) => {
-      toast.error(error.message || "Google login failed. Please try again.");
+      console.error(error);
+
+      toast.error("Failed to log in with Google.");
     }
   });
 

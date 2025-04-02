@@ -1,8 +1,22 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-import { login } from "@/lib/api-client";
+import { LoginFormData } from "@/types";
+
+import { axiosInstance, handleAxiosError } from "@/lib/axios";
+
+const login = async (formData: LoginFormData) => {
+  try {
+    const response = await axiosInstance.post("/api/auth/login", formData, {
+      withCredentials: true
+    });
+
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
@@ -11,14 +25,16 @@ export const useLogin = () => {
   const mutation = useMutation({
     mutationFn: login,
     onSuccess: async () => {
-      toast.success("Welcoe to Stay");
+      toast.success("Welcome to Stay");
 
-      await queryClient.invalidateQueries({ queryKey: ["validateToken"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["currentUser"]
+      });
 
       navigate("/");
     },
     onError: (error) => {
-      toast.error(error.message || "Registration failed. Please try again.");
+      toast.error(error.message);
     }
   });
 

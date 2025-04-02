@@ -1,5 +1,5 @@
 export type User = {
-  _id: string;
+  id: string;
   email: string;
   password: string;
   firstName: string;
@@ -16,8 +16,8 @@ export enum UserRole {
   CUSTOMER = "CUSTOMER"
 }
 
-export type Accomodation = {
-  _id: string;
+export type Accommodation = {
+  id: string;
   userId: string;
   name: string;
   city: string;
@@ -28,7 +28,6 @@ export type Accomodation = {
   childCount: number;
   facilities: string[];
   pricePerNight: number;
-  starRating: number;
   imageUrls: string[];
   lastUpdated: Date;
 
@@ -36,7 +35,7 @@ export type Accomodation = {
 };
 
 export type Booking = {
-  _id: string;
+  id: string;
   userId: string;
   firstName: string;
   lastName: string;
@@ -46,12 +45,12 @@ export type Booking = {
   checkIn: Date;
   checkOut: Date;
   totalCost: number;
-  accomodationId: string;
-  accomodation?: Accomodation;
+  accommodationId: string;
+  accommodation?: Accommodation;
 };
 
-export type AccomodationSearchResponse = {
-  data: Accomodation[];
+export type AccommodationSearchResponse = {
+  data: Accommodation[];
   pagination: {
     total: number;
     page: number;

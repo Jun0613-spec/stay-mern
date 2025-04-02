@@ -6,22 +6,19 @@ interface LoaderProps {
   size?: number;
   color?: string;
   className?: string;
+  iconClassName?: string;
 }
 
 const Spinner = ({
   size = 18,
   color = "text-muted-foreground",
-  className = ""
+  className = "",
+  iconClassName = ""
 }: LoaderProps) => {
   return (
-    <div
-      className={cn(
-        "flex flex-col gap-y-4 items-center justify-center h-12",
-        className
-      )}
-    >
+    <div className={cn("flex items-center justify-center", className)}>
       <LoaderCircle
-        className={cn("animate-spin", color)}
+        className={cn("animate-spin", color, iconClassName)}
         style={{ width: size, height: size }}
       />
     </div>

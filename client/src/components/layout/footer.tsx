@@ -5,7 +5,7 @@ import { FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   return (
-    <footer className="bg-neutral-200 dark:bg-neutral-800 py-6 md:py-10">
+    <footer className="border-t bg-neutral-50 dark:bg-neutral-800 py-6 md:py-10">
       <div className="container mx-auto px-6 sm:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 tracking-tight">
@@ -37,7 +37,6 @@ const Footer = () => {
           <div className="flex space-x-4 mb-4">
             <a
               href="https://www.facebook.com/"
-              aria-label="Facebook"
               target="_blank"
               className="hover:opacity-80"
             >
@@ -45,7 +44,6 @@ const Footer = () => {
             </a>
             <a
               href="https://www.instagram.com/"
-              aria-label="Instagram"
               target="_blank"
               className="hover:opacity-80"
             >
@@ -53,7 +51,6 @@ const Footer = () => {
             </a>
             <a
               href="https://x.com/"
-              aria-label="X"
               target="_blank"
               className="hover:opacity-80"
             >
@@ -61,7 +58,6 @@ const Footer = () => {
             </a>
             <a
               href="https://www.linkedin.com/"
-              aria-label="Linkedin"
               target="_blank"
               className="hover:opacity-80"
             >
@@ -69,7 +65,6 @@ const Footer = () => {
             </a>
             <a
               href="https://www.youtube.com/"
-              aria-label="Youtube"
               target="_blank"
               className="hover:opacity-80"
             >
@@ -78,7 +73,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-8 text-center text-sm text-neutral-500 dark:text-neutral-300 flex justify-center space-x-4">
-          <span>© Movpla. All rights reserved.</span>
+          <span>© Stay. All rights reserved.</span>
           <Link to="/">Privacy Policy</Link>
           <Link to="/">Terms of Service</Link>
           <Link to="/">Cookie Policy</Link>

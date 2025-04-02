@@ -1,12 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
-
-import { ModeToggle } from "../mode-toggle";
-
+import ThemeToggle from "../theme-toggle";
 import UserButton from "./user-button";
-
-import { useGetAuthUser } from "@/hooks/auth/use-get-auth-user";
+import Button from "../button";
+import { useAuth } from "@/contexts/auth-context";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -17,10 +14,10 @@ const Navbar = () => {
 
   const isHomePage = location.pathname === "/";
 
-  const { isLoggedIn, data: currentUser } = useGetAuthUser();
+  const { isLoggedIn, currentUser } = useAuth();
 
   return (
-    <div className=" dark:bg-neutral-800 py-6 px-2">
+    <div className="bg-neutral-50 dark:bg-neutral-800 py-6">
       <div className="container mx-auto flex justify-between">
         <div className="tracking-tight">
           <Link to="/" className="cursor-pointer hover:!text-neutral-300">
@@ -36,17 +33,14 @@ const Navbar = () => {
               <>
                 {currentUser?.role === "BUSINESS" && (
                   <Button
-                    className="flex items-center text-white px-3 font-bold bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-800 dark:hover:bg-indigo-900"
-                    onClick={() => navigate("/my-accomodations")}
+                    size="sm"
+                    onClick={() => navigate("/my-accommodations")}
                   >
-                    My Accomodations
+                    My Accommodations
                   </Button>
                 )}
                 {currentUser?.role === "CUSTOMER" && (
-                  <Button
-                    className="flex items-center text-white px-3 font-bold bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-800 dark:hover:bg-indigo-900"
-                    onClick={() => navigate("/my-bookings")}
-                  >
+                  <Button size="sm" onClick={() => navigate("/my-bookings")}>
                     My Bookings
                   </Button>
                 )}
@@ -54,34 +48,37 @@ const Navbar = () => {
             )}
           </div>
 
-          <ModeToggle />
+          <ThemeToggle />
           {isLoggedIn ? (
-            <>
+            <div className="flex items-center justify-between gap-3">
               <UserButton />
-            </>
+              <div className="md:flex flex-col hidden">
+                <p className=" font-bold text-sm">
+                  {currentUser?.firstName} {currentUser?.lastName}
+                </p>
+                <p className="text-xs">{currentUser?.email}</p>
+              </div>
+            </div>
           ) : (
             <>
               {!isAuthPage && (
-                <>
-                  <Link to="/register">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="dark:bg-indigo-800 hover:bg-gray-100 dark:hover:bg-indigo-900 text-indigo-800 dark:text-white font-semibold rounded"
-                    >
-                      Register
-                    </Button>
-                  </Link>
-                  <Link to="/login">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="dark:bg-indigo-800 hover:bg-gray-100 dark:hover:bg-indigo-900 text-indigo-800 dark:text-white font-semibold rounded"
-                    >
-                      Login
-                    </Button>
-                  </Link>
-                </>
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={() => navigate("/register")}
+                    size="sm"
+                    variant="primary"
+                  >
+                    Register
+                  </Button>
+
+                  <Button
+                    onClick={() => navigate("/login")}
+                    size="sm"
+                    variant="secondary"
+                  >
+                    Login
+                  </Button>
+                </div>
               )}
             </>
           )}

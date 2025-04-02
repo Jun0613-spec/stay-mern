@@ -132,6 +132,10 @@ html,
   }
 
   .container {
-    @apply md:px-10;
+    @apply px-4 md:px-8;
   }
+}
+
+.react-datepicker {
+  z-index: 9999 !important;
 }

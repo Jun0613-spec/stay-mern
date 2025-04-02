@@ -2,8 +2,13 @@ import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
 
 import { prisma } from "../lib/prisma";
+
+const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+
+const client = new OAuth2Client(CLIENT_ID);
 
 export const register = async (req: Request, res: Response): Promise<any> => {
   const errors = validationResult(req);
@@ -46,6 +51,7 @@ export const register = async (req: Request, res: Response): Promise<any> => {
     res.cookie("auth_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 86400000 // 1 day
     });
 
@@ -80,6 +86,7 @@ export const login = async (req: Request, res: Response): Promise<any> => {
       password,
       existingUser.password
     );
+
     if (!isPasswordMatch)
       return res
         .status(400)
@@ -94,6 +101,7 @@ export const login = async (req: Request, res: Response): Promise<any> => {
     res.cookie("auth_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 86400000 // 1 day
     });
 
@@ -108,15 +116,68 @@ export const login = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-export const getValidateTokenUser = async (
+export const logout = (req: Request, res: Response): void => {
+  res.clearCookie("auth_token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict"
+  });
+
+  res.status(200).json({ message: "Logged out successfully" });
+};
+
+export const googleLogin = async (
   req: Request,
   res: Response
 ): Promise<any> => {
-  return res.status(200).send({ userId: req.userId });
-};
+  const { credential } = req.body;
 
-export const logout = (req: Request, res: Response): void => {
-  res.cookie("auth_token", "", { expires: new Date(0) });
+  if (!credential) {
+    return res.status(400).json({ message: "Missing Google credential" });
+  }
 
-  res.status(200).json({ message: "Logout successful" });
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: CLIENT_ID
+    });
+
+    const payload = ticket.getPayload();
+
+    let user = await prisma.user.findUnique({
+      where: { email: payload?.email }
+    });
+
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email: payload?.email!,
+          firstName: payload?.given_name!,
+          lastName: payload?.family_name!,
+          avatarUrl: payload?.picture,
+          role: "CUSTOMER",
+          password: ""
+        }
+      });
+    }
+
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET_KEY as string,
+      { expiresIn: "1d" }
+    );
+
+    res.cookie("auth_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 86400000 // 1 day
+    });
+    res
+      .status(200)
+      .json({ success: true, message: "User authenticated", user });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Failed to login with google" });
+  }
 };

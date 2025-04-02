@@ -1,128 +1,157 @@
-import {
-  BedSingleIcon,
-  HotelIcon,
-  LogOut,
-  SettingsIcon,
-  UserIcon
-} from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
+  LuBedSingle,
+  LuHotel,
+  LuLogOut,
+  LuSettings,
+  LuUser
+} from "react-icons/lu";
+import { GoHeart } from "react-icons/go";
 
-import { useGetAuthUser } from "@/hooks/auth/use-get-auth-user";
 import { useLogout } from "@/hooks/auth/use-logout";
+
+import UserAvatar from "../user-avatar";
+import UserButtonItems from "./user-button-items";
+
+import { useAuth } from "@/contexts/auth-context";
 
 const UserButton = () => {
   const navigate = useNavigate();
 
-  const { data: currentUser } = useGetAuthUser();
+  const { currentUser } = useAuth();
   const { mutate: logout } = useLogout();
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const toggleDropdown = () => {
+    setIsOpen((prevState) => !prevState);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   if (!currentUser) {
     navigate("/login");
-
-    return;
+    return null;
   }
 
   return (
-    <DropdownMenu modal={false}>
-      <DropdownMenuTrigger className="outline-none relative cursor-pointer">
-        <Avatar className="size-8 transition hover:opacity-65">
-          <AvatarImage
-            alt={currentUser?.firstName || "User Avatar"}
-            src={currentUser?.avatarImage || undefined}
-            className="hover:opacity-80 object-cover"
-          />
-          <AvatarFallback className="font-medium text-white bg-indigo-600 dark:bg-indigo-800 hover:bg-indigo-500 dark:hover:bg-indigo-900 flex items-center justify-center text-sm">
-            {currentUser?.firstName[0].toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        side="bottom"
-        className="w-60 bg-white dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-600"
-        sideOffset={10}
+    <div ref={dropdownRef} className="relative">
+      {/* Trigger Button for Avatar */}
+      <div
+        className="cursor-pointer outline-none relative"
+        onClick={toggleDropdown}
       >
-        <div className="flex flex-col items-center justify-center gap-2 px-2.5 py-4">
-          <Avatar className="size-12">
-            <AvatarImage
-              alt={currentUser?.firstName || "User Avatar"}
-              src={currentUser?.avatarImage || ""}
-              className="object-cover"
+        <UserAvatar
+          className="text-sm hover:opacity-80"
+          avatarUrl={currentUser?.avatarUrl || ""}
+          firstName={currentUser?.firstName}
+        />
+      </div>
+
+      {/* Dropdown Menu Content */}
+      {isOpen && (
+        <div className="absolute w-60 h-auto rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 mt-2  overflow-y-auto z-50 50 right-0 md:-right-24 shadow-xl transition-all duration-200 ease-in-out ">
+          {/* User Info */}
+          <div className="flex flex-col items-center justify-center gap-2 p-4">
+            <UserAvatar
+              className="size-12 text-xl"
+              avatarUrl={currentUser?.avatarUrl || ""}
+              firstName={currentUser?.firstName}
             />
-            <AvatarFallback className="font-medium text-white bg-indigo-600 dark:bg-indigo-800 flex items-center justify-center text-2xl cursor-default">
-              {currentUser?.firstName[0].toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col items-center justify-center">
-            <p className="flex items-center text-sm font-semibold">
-              {currentUser?.firstName} {currentUser?.lastName}
-            </p>
-
-            <p className="text-sm text-neutral-600 dark:text-neutral-300">
-              {currentUser?.email}
-            </p>
+            <div className="text-center">
+              <p className="text-sm font-semibold">
+                {currentUser?.firstName} {currentUser?.lastName}
+              </p>
+              <p className="text-sm text-neutral-600 dark:text-neutral-300">
+                {currentUser?.email}
+              </p>
+            </div>
           </div>
+
+          {/* Menu Items */}
+          <hr className="border-neutral-300 dark:border-neutral-600" />
+
+          <UserButtonItems
+            icon={LuUser}
+            label="My account"
+            onClick={() => {
+              setIsOpen(false);
+              navigate("/my-account");
+            }}
+          />
+
+          <hr className="border-neutral-300 dark:border-neutral-600" />
+
+          {currentUser?.role === "BUSINESS" ? (
+            <UserButtonItems
+              icon={LuHotel}
+              label="My accommodations"
+              onClick={() => {
+                setIsOpen(false);
+                navigate("/my-accommodations");
+              }}
+            />
+          ) : (
+            <>
+              <UserButtonItems
+                icon={LuBedSingle}
+                label="My bookings"
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate("/my-bookings");
+                }}
+              />
+
+              <hr className="border-neutral-300 dark:border-neutral-600" />
+
+              <UserButtonItems
+                icon={GoHeart}
+                label="Saved"
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate("/saved-list");
+                }}
+              />
+            </>
+          )}
+
+          <hr className="border-neutral-300 dark:border-neutral-600" />
+
+          <UserButtonItems
+            icon={LuSettings}
+            label="Settings"
+            onClick={() => {
+              setIsOpen(false);
+              navigate("/settings");
+            }}
+          />
+
+          <hr className="border-neutral-300 dark:border-neutral-600" />
+
+          <UserButtonItems
+            icon={LuLogOut}
+            label="Logout"
+            onClick={() => logout()}
+            className="hover:bg-red-100 dark:hover:bg-red-900 text-red-600 dark:text-red-400"
+          />
         </div>
-        <DropdownMenuSeparator className="mb-1 bg-neutral-300 dark:bg-neutral-600" />
-
-        <DropdownMenuItem
-          onClick={() => navigate("/profile")}
-          className="h-10 flex items-center justify-center font-medium cursor-pointer"
-        >
-          <UserIcon className="size-4" />
-          Profile
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator className="mb-1 bg-neutral-300 dark:bg-neutral-600" />
-
-        {currentUser?.role === "BUSINESS" ? (
-          <DropdownMenuItem
-            onClick={() => navigate("/my-accomodations")}
-            className="h-10 flex items-center justify-center font-medium cursor-pointer"
-          >
-            <HotelIcon className="size-4" />
-            My Accomodations
-          </DropdownMenuItem>
-        ) : (
-          <DropdownMenuItem
-            onClick={() => navigate("/my-bookings")}
-            className="h-10 flex items-center justify-center font-medium cursor-pointer"
-          >
-            <BedSingleIcon className="size-4" />
-            My Bookings
-          </DropdownMenuItem>
-        )}
-
-        <DropdownMenuSeparator className="mb-1 bg-neutral-300 dark:bg-neutral-600" />
-
-        <DropdownMenuItem
-          onClick={() => navigate("/settings")}
-          className="h-10 flex items-center justify-center font-medium cursor-pointer"
-        >
-          <SettingsIcon className="size-4" />
-          Settings
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator className="mb-1 bg-neutral-300 dark:bg-neutral-600" />
-
-        <DropdownMenuItem
-          onClick={() => logout()}
-          className="h-10 flex items-center justify-center  font-medium cursor-pointer  "
-        >
-          <LogOut className="size-4" />
-          Logout
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      )}
+    </div>
   );
 };
 
