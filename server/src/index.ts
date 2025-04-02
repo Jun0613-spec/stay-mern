@@ -40,8 +40,6 @@ app.use(
 
 app.use(cookieParser());
 
-console.log("DATABASE_URL:", process.env.DATABASE_URL!);
-
 /* ROUTES */
 app.get("/test", async (req: Request, res: Response) => {
   res.json({ message: "hello from server endpoint" });
