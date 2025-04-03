@@ -118,7 +118,7 @@ const Login = () => {
         </div>
 
         {/* Google Login Button */}
-        <div className="text-center mt-4">
+        <div className="mt-4 w-full">
           <GoogleLoginButton />
         </div>
 
