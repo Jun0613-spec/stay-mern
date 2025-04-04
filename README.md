@@ -1,13 +1,30 @@
 # MERN stack accommodations booking web app
 
 This is a repository for Stay which is MERN stack accommodations booking web app
-Frontend stack - React, Vite, Typescirpt, Tailwind CSS, React Context Api, react-query, axios
-Backend stack - Node.js, Express, Typescript, Stripe, MongoDB, PrismaORM, Google-oauth, Cloudinary, jsonwebtoken
+
+## 🛠 Tech Stack
+
+### **Frontend:**
+
+- React, Vite, TypeScript, Tailwind CSS, React Query, Axios, React Context API
+
+### **Backend:**
+
+- Node.js, Express, TypeScript, MongoDB, Prisma ORM, Stripe API, Google OAuth, Cloudinary for image uploads, JSON Web Token (JWT) Authentication
+
+## 🚀 Features
+
+- 🔑 **Authentication & Authorization** – Google OAuth and JWT authentication.
+- 🏠 **Browse & Book Stays** – Search accommodations, view details, and book instantly.
+- 💳 **Secure Payments** – Integrated **Stripe API** for smooth transactions.(Stripe test card 4242 4242 4242 4242 12/34 567)
+- 🛠 **Business account** – Business users manage accommodations(etc. post, edit delete accommodations)
+- 📂 **Image Uploads** – Uses **Cloudinary** for image storage.
+- 📊 **Optimized Data Fetching** – Implemented **React Query** for efficient state management.
 
 ### Install packages
 
 ```shell
-npm istall --legacy-peer-deps or --force
+npm install --legacy-peer-deps or --force
 ```
 
 ### Setup .env file
