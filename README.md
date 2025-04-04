@@ -12,6 +12,8 @@ This is a repository for Stay which is MERN stack accommodations booking web app
 
 - Node.js, Express, TypeScript, MongoDB, Prisma ORM, Stripe API, Google OAuth, Cloudinary for image uploads, JSON Web Token (JWT) Authentication
 
+---
+
 ## 🚀 Features
 
 - 🔑 **Authentication & Authorization** – Google OAuth and JWT authentication.
@@ -20,6 +22,8 @@ This is a repository for Stay which is MERN stack accommodations booking web app
 - 🛠 **Business account** – Business users manage accommodations(etc. post, edit delete accommodations)
 - 📂 **Image Uploads** – Uses **Cloudinary** for image storage.
 - 📊 **Optimized Data Fetching** – Implemented **React Query** for efficient state management.
+
+---
 
 ### Install packages
 
