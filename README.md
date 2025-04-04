@@ -16,12 +16,12 @@ This is a repository for Stay which is MERN stack accommodations booking web app
 
 ## 🚀 Features
 
-- 🔑 **Authentication & Authorization** – Google OAuth and JWT authentication.
-- 🏠 **Browse & Book Stays** – Search accommodations, view details, and book instantly.
-- 💳 **Secure Payments** – Integrated **Stripe API** for smooth transactions.(Stripe test card 4242 4242 4242 4242 12/34 567)
-- 🛠 **Business account** – Business users manage accommodations(etc. post, edit delete accommodations)
-- 📂 **Image Uploads** – Uses **Cloudinary** for image storage.
-- 📊 **Optimized Data Fetching** – Implemented **React Query** for efficient state management.
+- **Authentication & Authorization** – Google login or email and password login
+- **Browse & Book Stays** – Search accommodations, view details, save accommodations and book instantly.
+- **Secure Payments** – Integrated **Stripe API** for smooth transactions.(Stripe test card 4242 4242 4242 4242 12/34 567)
+- **Business account** – Business users manage accommodations(etc. post, edit delete accommodations)
+- **Image Uploads** – Uses **Cloudinary** for image storage.
+- **Optimized Data Fetching** – Implemented **React Query** for efficient state management.
 
 ---
 
