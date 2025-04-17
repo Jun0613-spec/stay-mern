@@ -18,7 +18,7 @@ const verifyToken = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const token = req.cookies["access_token"];
+  const token = req.cookies["auth_token"];
 
   if (!token) {
     res.status(401).json({ message: "Unauthorized" });
