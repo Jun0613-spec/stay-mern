@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt, {
+  JsonWebTokenError,
+  JwtPayload,
+  TokenExpiredError
+} from "jsonwebtoken";
 
 declare global {
   namespace Express {
@@ -13,22 +17,47 @@ const verifyToken = async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<any> => {
-  const token = req.cookies["auth_token"];
+): Promise<void> => {
+  const token = req.cookies["access_token"];
 
   if (!token) {
-    return res.status(401).json({ message: "unauthorized" });
+    res.status(401).json({ message: "Unauthorized" });
+    return;
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY!);
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET_KEY as string
+    ) as JwtPayload;
 
-    req.userId = (decoded as JwtPayload).userId;
+    if (!decoded.userId) {
+      throw new JsonWebTokenError("Invalid token payload");
+    }
 
-    next();
+    req.userId = decoded.userId;
+
+    return next();
   } catch (error) {
-    res.cookie("auth_token", "", { expires: new Date(0) });
-    return res.status(401).json({ message: "unauthorized" });
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict"
+    });
+
+    if (error instanceof TokenExpiredError) {
+      res.status(401).json({ message: "Token expired" });
+      return;
+    }
+
+    if (error instanceof JsonWebTokenError) {
+      res.status(401).json({ message: "Invalid token" });
+      return;
+    }
+
+    console.error("Token verification error:", error);
+    res.status(500).json({ message: "Internal server error" });
+    return;
   }
 };
 
