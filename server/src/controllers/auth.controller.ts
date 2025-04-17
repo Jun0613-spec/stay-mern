@@ -51,8 +51,8 @@ export const register = async (req: Request, res: Response): Promise<any> => {
     res.cookie("auth_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 86400000 // 1 day
+      sameSite: "none",
+      maxAge: 86400000
     });
 
     return res.status(200).send({
@@ -101,8 +101,8 @@ export const login = async (req: Request, res: Response): Promise<any> => {
     res.cookie("auth_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 86400000 // 1 day
+      sameSite: "none",
+      maxAge: 86400000
     });
 
     return res.status(200).json({
@@ -170,9 +170,10 @@ export const googleLogin = async (
     res.cookie("auth_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 86400000 // 1 day
+      sameSite: "none",
+      maxAge: 86400000
     });
+
     res
       .status(200)
       .json({ success: true, message: "User authenticated", user });
