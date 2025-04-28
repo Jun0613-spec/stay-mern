@@ -41,6 +41,10 @@ app.use(
 app.use(cookieParser());
 
 /* ROUTES */
+app.get("/", (req: Request, res: Response) => {
+  res.send("Server is running!");
+});
+
 app.get("/test", async (req: Request, res: Response) => {
   res.json({ message: "hello from server endpoint" });
 });
@@ -52,7 +56,7 @@ app.use("/api/my-accommodations", myAccommodationsRoute);
 app.use("/api/bookings", bookingsRoute);
 
 const url = process.env.SERVER_URL!;
-const interval = 30000;
+const interval = 300000;
 
 const reloadWebsite = () => {
   axios
@@ -65,7 +69,9 @@ const reloadWebsite = () => {
     });
 };
 
-setInterval(reloadWebsite, interval);
+if (process.env.NODE_ENV === "production") {
+  setInterval(reloadWebsite, interval);
+}
 
 const port = process.env.PORT || 3001;
 
