@@ -56,20 +56,42 @@ app.use("/api/my-accommodations", myAccommodationsRoute);
 app.use("/api/bookings", bookingsRoute);
 
 const url = process.env.SERVER_URL!;
-const interval = 300000;
+
+const interval = 14 * 60 * 1000; // 14 minutes
 
 const reloadWebsite = () => {
-  axios
-    .get(url)
-    .then(() => {
-      console.log("website reloaded");
-    })
-    .catch((error: Error) => {
-      console.error(`Error : ${error.message}`);
-    });
+  const now = new Date();
+
+  const ukHour = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    hour: "numeric",
+    hour12: false
+  }).format(now);
+
+  const hour = parseInt(ukHour, 10);
+
+  if (hour >= 9 && hour < 21) {
+    axios
+      .get(url)
+      .then(() => {
+        console.log(
+          "✅ Pinged at",
+          now.toLocaleTimeString("en-GB", { timeZone: "Europe/London" })
+        );
+      })
+      .catch((error) => {
+        console.error("Ping error:", error.message);
+      });
+  } else {
+    console.log(
+      "Skipped ping at",
+      now.toLocaleTimeString("en-GB", { timeZone: "Europe/London" })
+    );
+  }
 };
 
 if (process.env.NODE_ENV === "production") {
+  reloadWebsite();
   setInterval(reloadWebsite, interval);
 }
 
